@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบแจ้งซ่อม Online</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <style>
+        body{
+            margin:0;
+            font-family: Arial, sans-serif;
+            background:#f2f2f2;
+        }
+
+        .container{
+            max-width:600px;
+            margin:auto;
+            padding:20px;
+        }
+
+        input[type=text],
+        textarea{
+            width:100%;
+            padding:12px;
+            margin:8px 0;
+            border:1px solid #ccc;
+            border-radius:4px;
+            box-sizing:border-box;
+        }
+
+        button{
+            width:100%;
+            background:#4CAF50;
+            color:white;
+            padding:14px;
+            border:none;
+            border-radius:4px;
+            cursor:pointer;
+        }
+
+        button:hover{
+            background:#45a049;
+        }
+
+        .box{
+            background:white;
+            padding:20px;
+            border-radius:8px;
+            box-shadow:0 0 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+<div class="box">
+
+<h2>ระบบแจ้งซ่อม Online</h2>
+
+<label>เรื่องที่แจ้ง</label>
+<textarea id="request" rows="6" placeholder="พิมพ์อาการเสีย..."></textarea>
+
+<label>ผู้แจ้ง</label>
+<input type="text" id="displayName" readonly>
+
+<button onclick="saveRequest()">ส่งข้อความ</button>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+<script>
+
+let userId = "";
+let displayName = "";
+let pictureUrl = "";
+
+async function main(){
+
+    await liff.init({
+        liffId: "2009390223-MxME94q7"
+    });
+
+    if(!liff.isLoggedIn()){
+        liff.login();
+        return;
+    }
+
+    const profile = await liff.getProfile();
+
+    userId = profile.userId;
+    displayName = profile.displayName;
+    pictureUrl = profile.pictureUrl;
+
+    document.getElementById("displayName").value = displayName;
+
+}
+
+main();
+
+
+function saveRequest(){
+
+    let request = document.getElementById("request").value;
+
+    if(request == ""){
+        Swal.fire("แจ้งเตือน","กรุณากรอกข้อความ","warning");
+        return;
+    }
+
+    google.script.run
+    .withSuccessHandler(function(){
+
+        Swal.fire("สำเร็จ","บันทึกข้อมูลแล้ว","success");
+
+        document.getElementById("request").value="";
+
+    })
+    .saveRequest(userId,displayName,pictureUrl,request);
+
+}
+
+</script>
+
+</body>
+</html>
