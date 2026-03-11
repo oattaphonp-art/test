@@ -117,7 +117,7 @@ Swal.fire("แจ้งเตือน","กรุณากรอกข้อค
 return;
 }
 
- let url = "<< URL >>?userId=" + userId + "&displayName=" + displayName + "&pictureUrl=" + pictureUrl;
+ let url = "https://script.google.com/macros/s/AKfycbyTxYZ29Z6VpRR9YJmTqeEH6ybUfsdXmdHTR7leMgN1AFAu21Xp0_cDCiMg7D-IFF7aqA/exec?userId=" + userId + "&displayName=" + displayName + "&pictureUrl=" + pictureUrl;
 
 fetch(url,{
 method:"POST",
@@ -143,3 +143,4 @@ document.getElementById("request").value="";
 
 </body>
 </html>
+
