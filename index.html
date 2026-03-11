@@ -1,57 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <base target="_top">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบแจ้งซ่อม Online</title>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ระบบแจ้งซ่อม Online</title>
 
-    <style>
-        body{
-            margin:0;
-            font-family: Arial, sans-serif;
-            background:#f2f2f2;
-        }
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
-        .container{
-            max-width:600px;
-            margin:auto;
-            padding:20px;
-        }
+<style>
 
-        input[type=text],
-        textarea{
-            width:100%;
-            padding:12px;
-            margin:8px 0;
-            border:1px solid #ccc;
-            border-radius:4px;
-            box-sizing:border-box;
-        }
+body{
+margin:0;
+font-family: Arial, sans-serif;
+background:#f2f2f2;
+}
 
-        button{
-            width:100%;
-            background:#4CAF50;
-            color:white;
-            padding:14px;
-            border:none;
-            border-radius:4px;
-            cursor:pointer;
-        }
+.container{
+max-width:600px;
+margin:auto;
+padding:20px;
+}
 
-        button:hover{
-            background:#45a049;
-        }
+input[type=text],
+textarea{
+width:100%;
+padding:12px;
+margin:8px 0;
+border:1px solid #ccc;
+border-radius:4px;
+box-sizing:border-box;
+}
 
-        .box{
-            background:white;
-            padding:20px;
-            border-radius:8px;
-            box-shadow:0 0 10px rgba(0,0,0,0.1);
-        }
-    </style>
+button{
+width:100%;
+background:#4CAF50;
+color:white;
+padding:14px;
+border:none;
+border-radius:4px;
+cursor:pointer;
+}
+
+button:hover{
+background:#45a049;
+}
+
+.box{
+background:white;
+padding:20px;
+border-radius:8px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+</style>
+
 </head>
 
 <body>
@@ -83,22 +86,22 @@ let pictureUrl = "";
 
 async function main(){
 
-    await liff.init({
-        liffId: "2009390223-MxME94q7"
-    });
+await liff.init({
+liffId: "2009390223-MxME94q7"
+});
 
-    if(!liff.isLoggedIn()){
-        liff.login();
-        return;
-    }
+if(!liff.isLoggedIn()){
+liff.login();
+return;
+}
 
-    const profile = await liff.getProfile();
+const profile = await liff.getProfile();
 
-    userId = profile.userId;
-    displayName = profile.displayName;
-    pictureUrl = profile.pictureUrl;
+userId = profile.userId;
+displayName = profile.displayName;
+pictureUrl = profile.pictureUrl;
 
-    document.getElementById("displayName").value = displayName;
+document.getElementById("displayName").value = displayName;
 
 }
 
@@ -107,22 +110,32 @@ main();
 
 function saveRequest(){
 
-    let request = document.getElementById("request").value;
+let request = document.getElementById("request").value;
 
-    if(request == ""){
-        Swal.fire("แจ้งเตือน","กรุณากรอกข้อความ","warning");
-        return;
-    }
+if(request == ""){
+Swal.fire("แจ้งเตือน","กรุณากรอกข้อความ","warning");
+return;
+}
 
-    google.script.run
-    .withSuccessHandler(function(){
+ let url = "<< URL >>?userId=" + userId + "&displayName=" + displayName + "&pictureUrl=" + pictureUrl;
 
-        Swal.fire("สำเร็จ","บันทึกข้อมูลแล้ว","success");
+fetch(url,{
+method:"POST",
+body: JSON.stringify({
+userId:userId,
+displayName:displayName,
+pictureUrl:pictureUrl,
+request:request
+})
+})
+.then(res=>res.text())
+.then(data=>{
 
-        document.getElementById("request").value="";
+Swal.fire("สำเร็จ","บันทึกข้อมูลแล้ว","success");
 
-    })
-    .saveRequest(userId,displayName,pictureUrl,request);
+document.getElementById("request").value="";
+
+});
 
 }
 
